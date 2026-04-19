@@ -1,0 +1,49 @@
+.ruler {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 0 4px;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  margin-bottom: 4px;
+}
+
+.labelSpacer {
+  flex-shrink: 0;
+}
+
+.rulerBar {
+  flex: 1;
+  position: relative;
+  height: 16px;
+}
+
+.rulerMark {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+}
+
+.rulerTick {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 4px;
+  transform: translateX(-0.5px);
+  background: #475569;
+}
+
+.rulerLabel {
+  position: absolute;
+  left: 0;
+  bottom: 6px;
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+  line-height: 1;
+  transform: translateX(-50%);
+}

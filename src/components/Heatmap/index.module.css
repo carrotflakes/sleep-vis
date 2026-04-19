@@ -1,0 +1,58 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+}
+
+.listWrapper {
+  position: relative;
+}
+
+/* Rows */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowLabel {
+  width: 90px;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-align: right;
+}
+
+.canvas {
+  flex: 1;
+  display: block;
+  height: 20px;
+  border-radius: 4px;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.legendText {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.legendGradient {
+  width: 80px;
+  height: 10px;
+  border-radius: 3px;
+  background: linear-gradient(to right, hsl(240, 80%, 30%), hsl(120, 80%, 40%), hsl(0, 80%, 50%));
+}
