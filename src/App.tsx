@@ -63,6 +63,10 @@ export default function App() {
             </p>
             <p className={styles.infoPanelText}>
               <a href="https://github.com/carrotflakes/sleep-vis" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+              <br />
+              <a href="/terms.html" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+              <br />
+              <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
             </p>
             <button className={styles.infoPanelClose} onClick={() => setInfoOpen(false)}>Close</button>
           </div>

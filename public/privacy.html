@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy - Sleep Vis</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      color: #222;
+      line-height: 1.7;
+      background: #fafafa;
+    }
+    h1 { font-size: 1.6rem; border-bottom: 2px solid #ddd; padding-bottom: 0.5rem; }
+    h2 { font-size: 1.2rem; margin-top: 2rem; }
+    a { color: #1a73e8; }
+    .updated { color: #666; font-size: 0.9rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: April 21, 2026</p>
+
+  <h2>1. Overview</h2>
+  <p>
+    Sleep Vis ("the Service") is a free, open-source, client-side web application operated by
+    carrotflakes. This Privacy Policy explains how the Service handles your information.
+  </p>
+
+  <h2>2. Data We Access</h2>
+  <p>
+    When you sign in with your Google account, the Service requests <strong>read-only</strong>
+    access to your sleep data via the Google Health API
+    (<code>https://www.googleapis.com/auth/googlehealth.sleep.readonly</code>).
+  </p>
+  <p>The sleep data accessed includes:</p>
+  <ul>
+    <li>Sleep session start and end times</li>
+    <li>Sleep stages (awake, light, deep, REM, etc.) with timestamps</li>
+    <li>Summary statistics (minutes asleep, minutes awake)</li>
+    <li>Data source information</li>
+  </ul>
+
+  <h2>3. How Your Data Is Processed</h2>
+  <table>
+    <thead>
+      <tr><th>Aspect</th><th>Detail</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Where data is processed</td>
+        <td>Entirely in your browser. Your sleep data is fetched directly from Google's servers and rendered locally.</td>
+      </tr>
+      <tr>
+        <td>Server-side processing</td>
+        <td><strong>None.</strong> The Service has no backend server. No data is transmitted to the operator or any third party.</td>
+      </tr>
+      <tr>
+        <td>Data storage</td>
+        <td><strong>None.</strong> Data is held only in browser memory (React state) during your session. It is discarded when you close or refresh the page. No cookies, localStorage, or databases are used.</td>
+      </tr>
+      <tr>
+        <td>Data sharing</td>
+        <td><strong>None.</strong> Your data is never shared with, sold to, or disclosed to any third party.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. Third-Party Services</h2>
+  <p>The Service relies on the following third-party services:</p>
+  <ul>
+    <li>
+      <strong>Google Identity Services</strong> — for authentication (OAuth 2.0).
+      Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.
+    </li>
+    <li>
+      <strong>Google Health API</strong> — for fetching your sleep data.
+      Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.
+    </li>
+  </ul>
+  <p>No analytics, advertising, or tracking services are used.</p>
+
+  <h2>5. Google API Services User Data Policy</h2>
+  <p>
+    Sleep Vis's use and transfer to any other app of information received from Google APIs will
+    adhere to the
+    <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>,
+    including the Limited Use requirements.
+  </p>
+
+  <h2>6. Authentication &amp; Access Tokens</h2>
+  <p>
+    The Service uses OAuth 2.0 access tokens to communicate with Google APIs.
+    Tokens are held only in browser memory and are not stored persistently.
+    You can revoke access at any time by:
+  </p>
+  <ul>
+    <li>Clicking "Sign Out" within the Service, or</li>
+    <li>Visiting your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions</a> page.</li>
+  </ul>
+
+  <h2>7. Children's Privacy</h2>
+  <p>
+    The Service is not directed at children under 13. We do not knowingly collect personal
+    information from children.
+  </p>
+
+  <h2>8. Changes to This Policy</h2>
+  <p>
+    This Privacy Policy may be updated from time to time. Changes will be posted on this page
+    with an updated revision date. Continued use of the Service after changes constitutes
+    acceptance of the revised policy.
+  </p>
+
+  <h2>9. Contact</h2>
+  <p>
+    If you have questions or concerns about this Privacy Policy, please open an issue at
+    <a href="https://github.com/carrotflakes/sleep-vis/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a>.
+  </p>
+
+  <hr />
+  <p style="font-size: 0.85rem; color: #888;">Operator: carrotflakes</p>
+</body>
+</html>
