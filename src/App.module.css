@@ -1,4 +1,6 @@
 .app {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: #0f172a;
   color: #e2e8f0;
@@ -29,10 +31,37 @@
 }
 
 .main {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
   padding: 32px 24px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px 24px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.footer a {
+  color: #94a3b8;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #cbd5e1;
+  text-decoration: underline;
+}
+
+.footerDivider {
+  color: #475569;
 }
 
 .message {
