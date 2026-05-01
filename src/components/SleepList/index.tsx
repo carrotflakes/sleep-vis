@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { SleepSession } from "../../models/sleep";
 import { SleepBar, getWindowStart } from "../SleepBar";
 import { TimeRuler } from "../TimeRuler";
@@ -53,7 +54,7 @@ export function SleepList({ sessions }: Props) {
     );
   }
 
-  const days = groupByDay(sessions);
+  const days = useMemo(() => groupByDay(sessions), [sessions]);
 
   return (
     <div className={styles.container}>
