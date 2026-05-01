@@ -33,6 +33,7 @@ interface Bucket {
 }
 
 interface HeatmapRowData {
+  key: string;
   label: string;
   freq: number[];
 }
@@ -101,7 +102,7 @@ function buildRows(sessions: SleepSession[], period: Period): HeatmapRowData[] {
 
   return Array.from(map.entries())
     .sort(([a], [b]) => b.localeCompare(a))
-    .map(([, bucket]) => {
+    .map(([bucketKey, bucket]) => {
       const freq = new Array<number>(RESOLUTION).fill(0);
 
       for (const daySlots of bucket.daySlots.values()) {
@@ -111,6 +112,7 @@ function buildRows(sessions: SleepSession[], period: Period): HeatmapRowData[] {
       }
 
       return {
+        key: bucketKey,
         label: bucket.label,
         freq,
       };
@@ -208,8 +210,8 @@ export function Heatmap({ sessions, period, theme }: Props) {
       <div className={styles.listWrapper}>
         <TimeRuler />
         <div className={styles.rows}>
-          {rows.map(({ label, freq }) => (
-            <div key={label} className={styles.row}>
+          {rows.map(({ key, label, freq }) => (
+            <div key={key} className={styles.row}>
               <span className={styles.rowLabel}>{label}</span>
               <HeatmapRow freq={freq} maxFreq={globalMax} theme={theme} />
             </div>
