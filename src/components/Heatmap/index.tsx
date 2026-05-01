@@ -1,6 +1,7 @@
 import { useMemo, useRef, useEffect } from "react";
 import { formatDateLabel } from "../../models/date";
 import { SleepSession } from "../../models/sleep";
+import type { Theme } from "../../theme";
 import { TimeRuler } from "../TimeRuler";
 import styles from "./index.module.css";
 
@@ -34,6 +35,15 @@ interface Bucket {
 interface HeatmapRowData {
   label: string;
   freq: number[];
+}
+
+interface HeatmapPalette {
+  startHue: number;
+  endHue: number;
+  saturation: number;
+  startLightness: number;
+  endLightness: number;
+  markerColor: string;
 }
 
 function markDayRange(slots: Uint8Array, startOff: number, endOff: number) {
@@ -107,17 +117,45 @@ function buildRows(sessions: SleepSession[], period: Period): HeatmapRowData[] {
     });
 }
 
-function freqToColor(freq: number, maxFreq: number): string {
-  if (maxFreq === 0 || freq === 0) return "#1e293b";
-  const t = freq / maxFreq;
-  const hue = 240 * (1 - t);
-  const lightness = 25 + t * 25;
-  return `hsl(${hue}, 80%, ${lightness}%)`;
+function getCssVar(element: Element, name: string, fallback: string): string {
+  return getComputedStyle(element).getPropertyValue(name).trim() || fallback;
+}
+
+function getCssNumberVar(element: Element, name: string, fallback: number): number {
+  const value = Number.parseFloat(getCssVar(element, name, String(fallback)));
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function getHeatmapPalette(element: Element): HeatmapPalette {
+  return {
+    startHue: getCssNumberVar(element, "--heatmap-start-hue", 240),
+    endHue: getCssNumberVar(element, "--heatmap-end-hue", 0),
+    saturation: getCssNumberVar(element, "--heatmap-saturation", 80),
+    startLightness: getCssNumberVar(element, "--heatmap-start-lightness", 25),
+    endLightness: getCssNumberVar(element, "--heatmap-end-lightness", 50),
+    markerColor: getCssVar(element, "--heatmap-marker", "rgba(255,255,255,0.25)"),
+  };
+}
+
+function freqToColor(freq: number, maxFreq: number, palette: HeatmapPalette): string {
+  const t = freq / Math.max(maxFreq, 1);
+  const hue = palette.startHue + (palette.endHue - palette.startHue) * t;
+  const lightness =
+    palette.startLightness + (palette.endLightness - palette.startLightness) * t;
+  return `hsl(${hue}, ${palette.saturation}%, ${lightness}%)`;
 }
 
 // ---- Row component (canvas per bucket) ----
 
-function HeatmapRow({ freq, maxFreq }: { freq: number[]; maxFreq: number }) {
+function HeatmapRow({
+  freq,
+  maxFreq,
+  theme,
+}: {
+  freq: number[];
+  maxFreq: number;
+  theme: Theme;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -129,13 +167,14 @@ function HeatmapRow({ freq, maxFreq }: { freq: number[]; maxFreq: number }) {
     const w = canvas.width;
     const h = canvas.height;
     const slotW = w / RESOLUTION;
+    const palette = getHeatmapPalette(canvas);
 
     for (let i = 0; i < RESOLUTION; i++) {
-      ctx.fillStyle = freqToColor(freq[i], maxFreq);
+      ctx.fillStyle = freqToColor(freq[i], maxFreq, palette);
       ctx.fillRect(i * slotW, 0, Math.ceil(slotW), h);
     }
 
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.strokeStyle = palette.markerColor;
     ctx.lineWidth = 1;
     for (let hour = 1; hour < 24; hour++) {
       const x = Math.round((hour / 24) * w) + 0.5;
@@ -144,7 +183,7 @@ function HeatmapRow({ freq, maxFreq }: { freq: number[]; maxFreq: number }) {
       ctx.lineTo(x, h * 0.8);
       ctx.stroke();
     }
-  }, [freq, maxFreq]);
+  }, [freq, maxFreq, theme]);
 
   return <canvas ref={canvasRef} className={styles.canvas} />;
 }
@@ -154,9 +193,10 @@ function HeatmapRow({ freq, maxFreq }: { freq: number[]; maxFreq: number }) {
 interface Props {
   sessions: SleepSession[];
   period: Period;
+  theme: Theme;
 }
 
-export function Heatmap({ sessions, period }: Props) {
+export function Heatmap({ sessions, period, theme }: Props) {
   const rows = useMemo(() => buildRows(sessions, period), [sessions, period]);
   const globalMax = useMemo(
     () => rows.reduce((max, row) => Math.max(max, ...row.freq), 0),
@@ -171,7 +211,7 @@ export function Heatmap({ sessions, period }: Props) {
           {rows.map(({ label, freq }) => (
             <div key={label} className={styles.row}>
               <span className={styles.rowLabel}>{label}</span>
-              <HeatmapRow freq={freq} maxFreq={globalMax} />
+              <HeatmapRow freq={freq} maxFreq={globalMax} theme={theme} />
             </div>
           ))}
         </div>

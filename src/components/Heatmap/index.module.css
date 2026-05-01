@@ -25,7 +25,7 @@
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   text-align: right;
   line-height: 1;
 }
@@ -49,12 +49,12 @@
 
 .legendText {
   font-size: 11px;
-  color: #64748b;
+  color: var(--color-text-subtle);
 }
 
 .legendGradient {
   width: 80px;
   height: 10px;
   border-radius: 3px;
-  background: linear-gradient(to right, hsl(240, 80%, 30%), hsl(120, 80%, 40%), hsl(0, 80%, 50%));
+  background: var(--heatmap-legend);
 }

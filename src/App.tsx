@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useGoogleAuth } from "./hooks/useGoogleAuth";
 import { LoadRange, useSleepData } from "./hooks/useSleepData";
+import { useTheme } from "./hooks/useTheme";
 import { SleepList } from "./components/SleepList";
 import { Heatmap } from "./components/Heatmap";
 import { Icon } from "./components/Icon.tsx";
+import { getThemeModeLabel } from "./theme";
 import styles from "./App.module.css";
 
 type Tab = "timeline" | "heatmap";
@@ -27,6 +29,7 @@ export default function App() {
   const [period, setPeriod] = useState<Period>("month");
   const [infoOpen, setInfoOpen] = useState(false);
   const [loadRangeOpen, setLoadRangeOpen] = useState(false);
+  const { themeMode, effectiveTheme, nextThemeMode, setThemeMode } = useTheme();
   const hasSessions = sessions.length > 0;
   const isInitialDataLoading = isSignedIn && dataLoading && !hasSessions;
   const canShowData = isSignedIn && !dataError && (!dataLoading || hasSessions);
@@ -40,6 +43,19 @@ export default function App() {
         </h1>
         <div className={styles.headerRight}>
           <button
+            type="button"
+            className={styles.themeBtn}
+            onClick={() => setThemeMode(nextThemeMode)}
+            aria-label={`Theme: ${getThemeModeLabel(themeMode)}. Switch to ${getThemeModeLabel(nextThemeMode)} theme`}
+            title={`Theme: ${getThemeModeLabel(themeMode)} (${effectiveTheme}). Switch to ${getThemeModeLabel(nextThemeMode)}`}
+          >
+            <Icon
+              name={themeMode === "system" ? "system" : themeMode === "light" ? "sun" : "moon"}
+              className={styles.themeIcon}
+            />
+          </button>
+          <button
+            type="button"
             className={styles.infoBtn}
             onClick={() => setInfoOpen((v) => !v)}
             aria-label="About this app"
@@ -162,7 +178,7 @@ export default function App() {
             {tab === "timeline" ? (
               <SleepList sessions={sessions} />
             ) : (
-              <Heatmap sessions={sessions} period={period} />
+              <Heatmap sessions={sessions} period={period} theme={effectiveTheme} />
             )}
             {dataLoading && (
               <p className={styles.loadingBelow}>Loading more data...</p>

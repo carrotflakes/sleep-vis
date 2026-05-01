@@ -14,8 +14,6 @@ export function getWindowStart(date: Date): Date {
   return d;
 }
 
-const SLEEP_COLOR = "#54a0ff";
-
 interface Props {
   windowStart: Date;
   sessions: SleepSession[];
@@ -51,7 +49,6 @@ export function SleepBar({ windowStart, sessions, yearLabel }: Props) {
             style={{
               left: `${toPercent(session.startTime)}%`,
               width: `${toWidth(session.startTime, session.endTime)}%`,
-              backgroundColor: SLEEP_COLOR,
             }}
             title={`${formatTime(session.startTime)} - ${formatTime(session.endTime)}`}
           />

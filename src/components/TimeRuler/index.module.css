@@ -6,8 +6,8 @@
   align-items: flex-end;
   gap: 8px;
   padding: 6px 0 3px;
-  background: #0f172a;
-  border-bottom: 1px solid #1e293b;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
   margin-bottom: 2px;
 }
 
@@ -34,7 +34,7 @@
   width: 1px;
   height: 3px;
   transform: translateX(-0.5px);
-  background: #475569;
+  background: var(--color-text-faint);
 }
 
 .rulerLabel {
@@ -42,7 +42,7 @@
   left: 0;
   bottom: 5px;
   font-size: 9px;
-  color: #64748b;
+  color: var(--color-text-subtle);
   white-space: nowrap;
   line-height: 1;
   transform: translateX(-50%);
