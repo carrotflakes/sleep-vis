@@ -22,7 +22,10 @@
   position: absolute;
   left: 0;
   top: 0;
+  padding: 0 2px 0 0;
   color: var(--color-text-subtle);
+  background: var(--color-bg);
+  border-radius: 3px;
 }
 
 .bar {
