@@ -10,7 +10,7 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
 }
 
 .empty {

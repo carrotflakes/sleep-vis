@@ -19,9 +19,10 @@ const SLEEP_COLOR = "#54a0ff";
 interface Props {
   windowStart: Date;
   sessions: SleepSession[];
+  yearLabel?: string;
 }
 
-export function SleepBar({ windowStart, sessions }: Props) {
+export function SleepBar({ windowStart, sessions, yearLabel }: Props) {
   const toPercent = (time: Date) => {
     const pct = ((time.getTime() - windowStart.getTime()) / WINDOW_MS) * 100;
     return Math.max(0, Math.min(100, pct));
@@ -38,7 +39,10 @@ export function SleepBar({ windowStart, sessions }: Props) {
 
   return (
     <div className={styles.sleepBar}>
-      <span className={styles.date}>{formatDateLabel(windowStart, "day")}</span>
+      <span className={styles.date}>
+        {yearLabel && <span className={styles.year}>{yearLabel}</span>}
+        <span>{formatDateLabel(windowStart, "day")}</span>
+      </span>
       <div className={styles.bar}>
         {sessions.map((session) => (
           <div

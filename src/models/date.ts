@@ -18,7 +18,7 @@ const MONTH_NAMES = [
 const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function formatMonthDay(date: Date): string {
-  return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
+  return `${MONTH_NAMES[date.getMonth()]} ${String(date.getDate()).padStart(2, " ")}`;
 }
 
 export function formatDateLabel(date: Date, period: DateLabelPeriod): string {

@@ -60,11 +60,16 @@ export function SleepList({ sessions }: Props) {
       <div className={styles.listWrapper}>
         <TimeRuler />
         <div className={styles.list}>
-          {days.map(({ windowStart, sessions: daySessions }) => (
+          {days.map(({ windowStart, sessions: daySessions }, index) => (
             <SleepBar
               key={windowStart.toISOString()}
               windowStart={windowStart}
               sessions={daySessions}
+              yearLabel={
+                index === 0 || days[index - 1].windowStart.getFullYear() !== windowStart.getFullYear()
+                  ? String(windowStart.getFullYear())
+                  : undefined
+              }
             />
           ))}
         </div>
