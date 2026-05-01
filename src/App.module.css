@@ -317,6 +317,12 @@
   min-width: 140px;
 }
 
+.loadRangeMenuDivider {
+  height: 1px;
+  margin: 4px 8px;
+  background: var(--color-border);
+}
+
 .loadRangeOption {
   background: none;
   border: none;
@@ -338,6 +344,15 @@
 .loadRangeOptionActive {
   color: var(--color-text);
   background: var(--color-surface-hover);
+}
+
+.loadRangeStopOption {
+  color: var(--color-danger);
+}
+
+.loadRangeStopOption:hover {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
 }
 
 .loadingBelow {

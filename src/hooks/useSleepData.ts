@@ -3,8 +3,6 @@ import { SleepSession, SleepSegment, parseSleepStageType } from "../models/sleep
 
 const HEALTH_API = "https://health.googleapis.com/v4/users/me";
 
-export type LoadRange = "month" | "year" | "all";
-
 interface HealthSleepStage {
   startTime: string;
   endTime: string;
@@ -65,59 +63,57 @@ function sortSessions(sessions: SleepSession[]): SleepSession[] {
   );
 }
 
-function getCivilDateDaysAgo(days: number): string {
-  const date = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
+function hasReachedLoadUntil(
+  sessions: SleepSession[],
+  loadUntil: Date | null
+): boolean {
+  return loadUntil
+    ? sessions.some((session) => session.endTime < loadUntil)
+    : false;
 }
 
-function getFilterForRange(loadRange: LoadRange): string | null {
-  switch (loadRange) {
-    case "month":
-      return `sleep.interval.civil_end_time >= "${getCivilDateDaysAgo(30)}"`;
-    case "year":
-      return `sleep.interval.civil_end_time >= "${getCivilDateDaysAgo(365)}"`;
-    case "all":
-      return null;
-  }
-}
-
-export function useSleepData(accessToken: string | null, loadRange: LoadRange) {
+export function useSleepData(accessToken: string | null, loadUntil: Date | null) {
   const [sessions, setSessions] = useState<SleepSession[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const requestIdRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const sessionsRef = useRef<SleepSession[]>([]);
+  const nextPageTokenRef = useRef<string | undefined>(undefined);
+  const hasMoreRef = useRef(true);
+
+  const stopLoading = useCallback(() => {
+    abortControllerRef.current?.abort();
+  }, []);
 
   const fetchSleepData = useCallback(async () => {
     if (!accessToken) {
-      setSessions([]);
       setLoading(false);
-      setError(null);
+      return;
+    }
+
+    if (
+      !hasMoreRef.current ||
+      hasReachedLoadUntil(sessionsRef.current, loadUntil)
+    ) {
+      setLoading(false);
       return;
     }
 
     abortControllerRef.current?.abort();
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
-    const requestId = ++requestIdRef.current;
 
     setLoading(true);
     setError(null);
 
     try {
-      const filter = getFilterForRange(loadRange);
-
-      const loadedSessions: SleepSession[] = [];
-      let pageToken: string | undefined;
-
       // Paginate through results (max 25 per page for sleep)
-      do {
+      while (
+        hasMoreRef.current &&
+        !hasReachedLoadUntil(sessionsRef.current, loadUntil)
+      ) {
         const params = new URLSearchParams();
-        if (filter) params.set("filter", filter);
+        const pageToken = nextPageTokenRef.current;
         if (pageToken) params.set("pageToken", pageToken);
 
         const res = await fetch(
@@ -138,37 +134,51 @@ export function useSleepData(accessToken: string | null, loadRange: LoadRange) {
         }
 
         const data: HealthListResponse = await res.json();
-        if (requestIdRef.current !== requestId) {
-          return;
-        }
+        nextPageTokenRef.current = data.nextPageToken;
+        hasMoreRef.current = Boolean(data.nextPageToken);
 
         if (data.dataPoints?.length) {
-          loadedSessions.push(...data.dataPoints.map(toSleepSession));
-          setSessions(sortSessions(loadedSessions));
+          const pageSessions = data.dataPoints.map(toSleepSession);
+          sessionsRef.current = sortSessions([
+            ...sessionsRef.current,
+            ...pageSessions,
+          ]);
+          setSessions(sessionsRef.current);
         }
-        pageToken = data.nextPageToken;
-      } while (pageToken);
+      }
     } catch (e) {
       if (abortController.signal.aborted) {
         return;
       }
-      if (requestIdRef.current !== requestId) {
-        return;
-      }
-      setError(e instanceof Error ? e.message : "An error occurred while fetching data.");
+      setError(
+        e instanceof Error
+          ? e.message
+          : "An error occurred while fetching data."
+      );
     } finally {
-      if (requestIdRef.current === requestId) {
+      if (abortControllerRef.current === abortController) {
+        abortControllerRef.current = null;
         setLoading(false);
       }
     }
-  }, [accessToken, loadRange]);
+  }, [accessToken, loadUntil]);
+
+  useEffect(() => {
+    abortControllerRef.current?.abort();
+    sessionsRef.current = [];
+    nextPageTokenRef.current = undefined;
+    hasMoreRef.current = Boolean(accessToken);
+    setSessions([]);
+    setLoading(false);
+    setError(null);
+  }, [accessToken]);
 
   useEffect(() => {
     fetchSleepData();
     return () => {
-      abortControllerRef.current?.abort();
+      stopLoading();
     };
-  }, [fetchSleepData]);
+  }, [fetchSleepData, stopLoading]);
 
-  return { sessions, loading, error, refetch: fetchSleepData };
+  return { sessions, loading, error, stopLoading };
 }

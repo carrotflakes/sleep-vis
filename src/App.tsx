@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useGoogleAuth } from "./hooks/useGoogleAuth";
-import { LoadRange, useSleepData } from "./hooks/useSleepData";
+import { useSleepData } from "./hooks/useSleepData";
 import { useTheme } from "./hooks/useTheme";
 import { SleepList } from "./components/SleepList";
 import { Heatmap } from "./components/Heatmap";
@@ -10,21 +10,39 @@ import styles from "./App.module.css";
 
 type Tab = "timeline" | "heatmap";
 type Period = "week" | "month" | "year";
+type LoadPreset = "month" | "year" | "all";
 
-function getLoadedSinceText(range: LoadRange): string {
-  if (range === "all") return "Loaded: all time";
-  const since = new Date();
-  if (range === "month") since.setMonth(since.getMonth() - 1);
-  else since.setFullYear(since.getFullYear() - 1);
-  return `Loaded since ${since.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
+function getLoadUntilForPreset(preset: LoadPreset): Date | null {
+  const date = new Date();
+  switch (preset) {
+    case "month":
+      date.setMonth(date.getMonth() - 1);
+      return date;
+    case "year":
+      date.setFullYear(date.getFullYear() - 1);
+      return date;
+    case "all":
+      return null;
+  }
+}
+
+function getLoadedSinceText(loadUntil: Date | null): string {
+  if (!loadUntil) return "Loaded: all time";
+
+  return `Loaded since ${loadUntil.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })}`;
 }
 
 export default function App() {
   const { accessToken, isSignedIn, loading: authLoading, error: authError, signIn, signOut } =
     useGoogleAuth();
-  const [loadRange, setLoadRange] = useState<LoadRange>("month");
-  const { sessions, loading: dataLoading, error: dataError } =
-    useSleepData(accessToken, loadRange);
+  const [loadPreset, setLoadPreset] = useState<LoadPreset>("month");
+  const [loadUntil, setLoadUntil] = useState<Date | null>(() => getLoadUntilForPreset("month"));
+  const { sessions, loading: dataLoading, error: dataError, stopLoading } =
+    useSleepData(accessToken, loadUntil);
   const [tab, setTab] = useState<Tab>("timeline");
   const [period, setPeriod] = useState<Period>("month");
   const [infoOpen, setInfoOpen] = useState(false);
@@ -157,19 +175,37 @@ export default function App() {
                     className={styles.loadRangeBtn}
                     onClick={() => setLoadRangeOpen((v) => !v)}
                   >
-                    {getLoadedSinceText(loadRange)} ▾
+                    {getLoadedSinceText(loadUntil)} ▾
                   </button>
                   {loadRangeOpen && (
                     <div className={styles.loadRangeDropdown}>
-                      {(["year", "all"] as const).map((r) => (
+                      {(["month", "year", "all"] as const).map((r) => (
                         <button
                           key={r}
-                          className={`${styles.loadRangeOption} ${loadRange === r ? styles.loadRangeOptionActive : ""}`}
-                          onClick={() => { setLoadRange(r); setLoadRangeOpen(false); }}
+                          className={`${styles.loadRangeOption} ${loadPreset === r ? styles.loadRangeOptionActive : ""}`}
+                          onClick={() => {
+                            setLoadPreset(r);
+                            setLoadUntil(getLoadUntilForPreset(r));
+                            setLoadRangeOpen(false);
+                          }}
                         >
-                          {r === "year" ? "Load past year" : "Load all time"}
+                          {r === "month" ? "Load past month" : r === "year" ? "Load past year" : "Load all time"}
                         </button>
                       ))}
+                      {dataLoading && (
+                        <>
+                          <span className={styles.loadRangeMenuDivider} />
+                          <button
+                            className={`${styles.loadRangeOption} ${styles.loadRangeStopOption}`}
+                            onClick={() => {
+                              stopLoading();
+                              setLoadRangeOpen(false);
+                            }}
+                          >
+                            Stop loading
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
