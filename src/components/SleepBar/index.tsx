@@ -4,9 +4,6 @@ import styles from "./index.module.css";
 
 export const WINDOW_MS = 24 * 60 * 60 * 1000;
 
-export const MARKER_HOURS = [0, 3, 6, 9, 12, 15, 18, 21, 24];
-const HOUR_TICKS = Array.from({ length: 23 }, (_, index) => index + 1);
-
 // Window starts at midnight of the given date's calendar day.
 export function getWindowStart(date: Date): Date {
   const d = new Date(date);
@@ -53,15 +50,6 @@ export function SleepBar({ windowStart, sessions, yearLabel }: Props) {
             title={`${formatTime(session.startTime)} - ${formatTime(session.endTime)}`}
           />
         ))}
-        <div className={styles.hourMarkers} aria-hidden="true">
-          {HOUR_TICKS.map((hour) => (
-            <div
-              key={hour}
-              className={styles.hourTick}
-              style={{ left: `${(hour / 24) * 100}%` }}
-            />
-          ))}
-        </div>
       </div>
     </div>
   );

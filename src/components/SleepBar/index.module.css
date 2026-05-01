@@ -34,6 +34,24 @@
   overflow: hidden;
 }
 
+.bar::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  left: 0;
+  width: 95.8333333333%;
+  pointer-events: none;
+  z-index: 2;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(4.347826087% - 1px),
+    var(--sleep-marker) calc(4.347826087% - 1px),
+    var(--sleep-marker) 4.347826087%
+  );
+}
+
 .segment {
   position: absolute;
   height: 100%;
@@ -45,20 +63,4 @@
 
 .segment:hover {
   opacity: 0.8;
-}
-
-.hourMarkers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.hourTick {
-  position: absolute;
-  top: 20%;
-  height: 60%;
-  width: 1px;
-  transform: translateX(-0.5px);
-  background: var(--sleep-marker);
 }
