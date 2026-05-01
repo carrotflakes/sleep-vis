@@ -123,14 +123,11 @@ function HeatmapRow({ freq, maxFreq }: { freq: number[]; maxFreq: number }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    canvas.width = RESOLUTION;
+    canvas.height = 5;
     const ctx = canvas.getContext("2d")!;
-    ctx.scale(dpr, dpr);
-    const w = rect.width;
-    const h = rect.height;
+    const w = canvas.width;
+    const h = canvas.height;
     const slotW = w / RESOLUTION;
 
     for (let i = 0; i < RESOLUTION; i++) {
