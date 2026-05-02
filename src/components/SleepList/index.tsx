@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useWindowVirtualRows } from "../../hooks/useWindowVirtualRows";
 import { SleepSession } from "../../models/sleep";
 import { SleepBar, getWindowStart } from "../SleepBar";
 import { TimeRuler } from "../TimeRuler";
@@ -9,6 +10,10 @@ interface Props {
 }
 
 const WINDOW_MS = 24 * 60 * 60 * 1000;
+const ROW_HEIGHT = 12;
+const ROW_GAP = 1;
+const OVERSCAN_ROWS = 30;
+const INITIAL_RENDER_ROWS = 120;
 
 function addToWindow(
   map: Map<string, { windowStart: Date; sessions: SleepSession[] }>,
@@ -43,6 +48,15 @@ function groupByDay(
 }
 
 export function SleepList({ sessions }: Props) {
+  const days = useMemo(() => groupByDay(sessions), [sessions]);
+  const { containerRef, totalHeight, virtualRows } = useWindowVirtualRows({
+    itemCount: days.length,
+    rowHeight: ROW_HEIGHT,
+    rowGap: ROW_GAP,
+    overscan: OVERSCAN_ROWS,
+    initialRenderCount: INITIAL_RENDER_ROWS,
+  });
+
   if (sessions.length === 0) {
     return (
       <div className={styles.empty}>
@@ -54,25 +68,37 @@ export function SleepList({ sessions }: Props) {
     );
   }
 
-  const days = useMemo(() => groupByDay(sessions), [sessions]);
-
   return (
     <div className={styles.container}>
       <div className={styles.listWrapper}>
         <TimeRuler />
-        <div className={styles.list}>
-          {days.map(({ windowStart, sessions: daySessions }, index) => (
-            <SleepBar
-              key={windowStart.toISOString()}
-              windowStart={windowStart}
-              sessions={daySessions}
-              yearLabel={
-                index === 0 || days[index - 1].windowStart.getFullYear() !== windowStart.getFullYear()
-                  ? String(windowStart.getFullYear())
-                  : undefined
-              }
-            />
-          ))}
+        <div
+          ref={containerRef}
+          className={styles.list}
+          style={{ height: totalHeight }}
+        >
+          {virtualRows.map(({ index, offsetTop }) => {
+            const { windowStart, sessions: daySessions } = days[index];
+            return (
+              <div
+                key={windowStart.toISOString()}
+                className={styles.virtualRow}
+                style={{ transform: `translateY(${offsetTop}px)` }}
+              >
+                <SleepBar
+                  windowStart={windowStart}
+                  sessions={daySessions}
+                  yearLabel={
+                    index === 0 ||
+                    days[index - 1].windowStart.getFullYear() !==
+                      windowStart.getFullYear()
+                      ? String(windowStart.getFullYear())
+                      : undefined
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

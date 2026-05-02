@@ -8,9 +8,18 @@
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  position: relative;
+}
+
+.virtualRow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.virtualRow > * {
+  height: 100%;
 }
 
 .empty {
