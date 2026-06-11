@@ -121,9 +121,43 @@ export default function App() {
               <span className={styles.deviceDivider}>/</span>
               <span>Pixel Watch</span>
             </div>
+            <p className={styles.heroDescription}>
+              Sleep Vis is a free web app that turns the sleep records tracked by your
+              Fitbit or Pixel Watch into clear, interactive charts — right in your browser.
+            </p>
+            <div className={styles.featureGrid}>
+              <div className={styles.featureCard}>
+                <Icon name="timeline" className={styles.featureIcon} />
+                <p className={styles.featureTitle}>Timeline</p>
+                <p className={styles.featureText}>
+                  Browse every night's sleep sessions day by day, with bed and wake times at a glance.
+                </p>
+              </div>
+              <div className={styles.featureCard}>
+                <Icon name="heatmap" className={styles.featureIcon} />
+                <p className={styles.featureTitle}>Heatmap</p>
+                <p className={styles.featureText}>
+                  Spot patterns in your sleep rhythm across weeks, months, or a whole year.
+                </p>
+              </div>
+              <div className={styles.featureCard}>
+                <Icon name="lock" className={styles.featureIcon} />
+                <p className={styles.featureTitle}>Private by design</p>
+                <p className={styles.featureText}>
+                  Everything runs locally in your browser. Your data is never stored on a server or shared.
+                </p>
+              </div>
+            </div>
             <button className={styles.signIn} onClick={signIn}>
               Sign in with Google
             </button>
+            <p className={styles.dataDisclosure}>
+              Sleep Vis requests <strong>read-only access to your sleep data</strong> from
+              your Google account, solely to display your sleep timeline and heatmap.
+              The data is fetched directly from Google in your browser and is never
+              collected, stored, or shared with anyone. See our{" "}
+              <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+            </p>
           </div>
         )}
 

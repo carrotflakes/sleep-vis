@@ -80,7 +80,84 @@
 
 .signInContainer {
   text-align: center;
-  padding: 64px 24px;
+  padding: 48px 24px 24px;
+  max-width: 720px;
+}
+
+.heroDescription {
+  margin: 0 auto 40px;
+  max-width: 480px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.featureCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.featureIcon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-accent);
+  margin-bottom: 4px;
+}
+
+.featureTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.featureText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.dataDisclosure {
+  margin: 28px auto 0;
+  max-width: 520px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--color-text-subtle);
+}
+
+.dataDisclosure strong {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.dataDisclosure a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.dataDisclosure a:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
 }
 
 .tagline {
